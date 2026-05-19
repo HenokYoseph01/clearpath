@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "ClearPath",
+    "slug": "clearpath",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "clearpath",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.clearpath.mvp"
+    },
+    "android": {
+      "package": "app.clearpath.mvp",
+      "adaptiveIcon": {
+        "backgroundColor": "#F4F7F9"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

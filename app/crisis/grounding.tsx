@@ -1,8 +1,8 @@
 import { Text, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
-import { ProgressBar } from "@/components/shared/ProgressBar";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
+import { CrisisStepHeader } from "@/components/crisis/CrisisStepHeader";
 import { useCrisisSession } from "@/hooks/useCrisisSession";
 
 const grounding = ["5 things you can see", "4 things you can feel", "3 things you can hear", "2 things you can smell", "1 thing you can taste"];
@@ -13,7 +13,7 @@ export default function GroundingScreen() {
 
   return (
     <Screen>
-      <ProgressBar step={2} total={8} />
+      <CrisisStepHeader step={2} total={8} backTo="/crisis/triage" />
       <CrisisResourcesBanner distressScore={session.distressStart} />
       <Text className="mt-8 font-display text-3xl text-text-primary">Let your attention land here first.</Text>
       <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Move through this slowly. No timer, no rush.</Text>

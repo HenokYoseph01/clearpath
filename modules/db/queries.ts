@@ -1,4 +1,5 @@
 import * as SQLite from "expo-sqlite";
+import { Platform } from "react-native";
 import { DistortionKey } from "@/constants/distortions";
 
 export type StoredEmotion = {
@@ -33,10 +34,75 @@ export type DailyCheckInRecord = {
   note?: string | null;
 };
 
-const db = SQLite.openDatabaseSync("clearpath.db");
+type TrainingProgressRecord = {
+  id: number;
+  day: number;
+  completedAt: number | null;
+  exerciseKey: string;
+  reflection: string | null;
+};
+
+type WebDatabaseShape = {
+  crisisSessions: CrisisSessionRecord[];
+  dailyCheckIns: DailyCheckInRecord[];
+  trainingProgress: TrainingProgressRecord[];
+};
+
+const webStorageKey = "clearpath.webDb";
+let db: SQLite.SQLiteDatabase | null = null;
+
+function isWebRuntime(): boolean {
+  return Platform.OS === "web";
+}
+
+function getDb(): SQLite.SQLiteDatabase {
+  if (isWebRuntime()) {
+    throw new Error("SQLite native database is not used on web.");
+  }
+  if (!db) {
+    db = SQLite.openDatabaseSync("clearpath.db");
+  }
+  return db;
+}
+
+function readWebDatabase(): WebDatabaseShape {
+  if (typeof localStorage === "undefined") {
+    return { crisisSessions: [], dailyCheckIns: [], trainingProgress: [] };
+  }
+  const stored = localStorage.getItem(webStorageKey);
+  if (!stored) {
+    return { crisisSessions: [], dailyCheckIns: [], trainingProgress: [] };
+  }
+  try {
+    const parsed = JSON.parse(stored) as Partial<WebDatabaseShape>;
+    return {
+      crisisSessions: parsed.crisisSessions ?? [],
+      dailyCheckIns: parsed.dailyCheckIns ?? [],
+      trainingProgress: parsed.trainingProgress ?? [],
+    };
+  } catch {
+    return { crisisSessions: [], dailyCheckIns: [], trainingProgress: [] };
+  }
+}
+
+function writeWebDatabase(next: WebDatabaseShape): void {
+  if (typeof localStorage === "undefined") {
+    return;
+  }
+  localStorage.setItem(webStorageKey, JSON.stringify(next));
+}
+
+function nextId(records: { id: number }[]): number {
+  return records.reduce((max, record) => Math.max(max, record.id), 0) + 1;
+}
 
 export function initializeDatabase(): void {
-  db.execSync(`
+  if (isWebRuntime()) {
+    writeWebDatabase(readWebDatabase());
+    return;
+  }
+
+  getDb().execSync(`
     CREATE TABLE IF NOT EXISTS crisis_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       created_at INTEGER NOT NULL,
@@ -117,7 +183,19 @@ function mapCrisis(row: Record<string, unknown>): CrisisSessionRecord {
 }
 
 export function saveCrisisSession(session: Omit<CrisisSessionRecord, "id" | "createdAt" | "completed">): void {
-  db.runSync(
+  if (isWebRuntime()) {
+    const webDb = readWebDatabase();
+    webDb.crisisSessions.unshift({
+      ...session,
+      id: nextId(webDb.crisisSessions),
+      createdAt: Date.now(),
+      completed: true,
+    });
+    writeWebDatabase(webDb);
+    return;
+  }
+
+  getDb().runSync(
     `INSERT INTO crisis_sessions (
       created_at, situation, emotions, automatic_thoughts, distortions, evidence_for,
       evidence_against, friend_perspective, balanced_thought, distress_start, distress_end, completed
@@ -137,17 +215,36 @@ export function saveCrisisSession(session: Omit<CrisisSessionRecord, "id" | "cre
 }
 
 export function listCrisisSessions(): CrisisSessionRecord[] {
-  const rows = db.getAllSync<Record<string, unknown>>("SELECT * FROM crisis_sessions ORDER BY created_at DESC");
+  if (isWebRuntime()) {
+    return readWebDatabase().crisisSessions.sort((a, b) => b.createdAt - a.createdAt);
+  }
+
+  const rows = getDb().getAllSync<Record<string, unknown>>("SELECT * FROM crisis_sessions ORDER BY created_at DESC");
   return rows.map(mapCrisis);
 }
 
 export function getCrisisSession(id: number): CrisisSessionRecord | null {
-  const row = db.getFirstSync<Record<string, unknown>>("SELECT * FROM crisis_sessions WHERE id = ?", id);
+  if (isWebRuntime()) {
+    return readWebDatabase().crisisSessions.find((session) => session.id === id) ?? null;
+  }
+
+  const row = getDb().getFirstSync<Record<string, unknown>>("SELECT * FROM crisis_sessions WHERE id = ?", id);
   return row ? mapCrisis(row) : null;
 }
 
 export function addDailyCheckIn(checkIn: Omit<DailyCheckInRecord, "id" | "createdAt">): void {
-  db.runSync(
+  if (isWebRuntime()) {
+    const webDb = readWebDatabase();
+    webDb.dailyCheckIns.unshift({
+      ...checkIn,
+      id: nextId(webDb.dailyCheckIns),
+      createdAt: Date.now(),
+    });
+    writeWebDatabase(webDb);
+    return;
+  }
+
+  getDb().runSync(
     "INSERT INTO daily_check_ins (date, created_at, mood_label, mood_score, energy, note) VALUES (?, ?, ?, ?, ?, ?)",
     checkIn.date,
     Date.now(),
@@ -159,7 +256,13 @@ export function addDailyCheckIn(checkIn: Omit<DailyCheckInRecord, "id" | "create
 }
 
 export function listDailyCheckIns(limit = 30): DailyCheckInRecord[] {
-  return db
+  if (isWebRuntime()) {
+    return readWebDatabase()
+      .dailyCheckIns.sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, limit);
+  }
+
+  return getDb()
     .getAllSync<Record<string, unknown>>("SELECT * FROM daily_check_ins ORDER BY created_at DESC LIMIT ?", limit)
     .map((row) => ({
       id: Number(row.id),
@@ -173,7 +276,20 @@ export function listDailyCheckIns(limit = 30): DailyCheckInRecord[] {
 }
 
 export function completeTrainingDay(day: number, exerciseKey: string, reflection: string): void {
-  db.runSync(
+  if (isWebRuntime()) {
+    const webDb = readWebDatabase();
+    webDb.trainingProgress.push({
+      id: nextId(webDb.trainingProgress),
+      day,
+      completedAt: Date.now(),
+      exerciseKey,
+      reflection,
+    });
+    writeWebDatabase(webDb);
+    return;
+  }
+
+  getDb().runSync(
     "INSERT INTO training_progress (day, completed_at, exercise_key, reflection) VALUES (?, ?, ?, ?)",
     day,
     Date.now(),
@@ -182,6 +298,21 @@ export function completeTrainingDay(day: number, exerciseKey: string, reflection
   );
 }
 
+export function getNextTrainingDay(): number {
+  if (isWebRuntime()) {
+    const lastDay = readWebDatabase().trainingProgress.reduce((max, record) => Math.max(max, record.day), 0);
+    return Math.min(lastDay + 1, 30);
+  }
+
+  const row = getDb().getFirstSync<{ lastDay: number | null }>("SELECT MAX(day) as lastDay FROM training_progress");
+  return Math.min((row?.lastDay ?? 0) + 1, 30);
+}
+
 export function clearAllData(): void {
-  db.execSync("DELETE FROM crisis_sessions; DELETE FROM daily_check_ins; DELETE FROM training_progress; UPDATE user_meta SET current_streak = 0, longest_streak = 0, last_active_date = NULL;");
+  if (isWebRuntime()) {
+    writeWebDatabase({ crisisSessions: [], dailyCheckIns: [], trainingProgress: [] });
+    return;
+  }
+
+  getDb().execSync("DELETE FROM crisis_sessions; DELETE FROM daily_check_ins; DELETE FROM training_progress; UPDATE user_meta SET current_streak = 0, longest_streak = 0, last_active_date = NULL;");
 }

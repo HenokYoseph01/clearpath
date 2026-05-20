@@ -8,10 +8,14 @@ type EmotionPickerProps = {
   selected: StoredEmotion[];
   onChange: (emotions: StoredEmotion[]) => void;
   mode?: "before" | "after";
+  lockedLabels?: boolean;
 };
 
-export function EmotionPicker({ selected, onChange, mode = "before" }: EmotionPickerProps) {
+export function EmotionPicker({ selected, onChange, mode = "before", lockedLabels = false }: EmotionPickerProps) {
   function toggle(label: string) {
+    if (lockedLabels) {
+      return;
+    }
     const exists = selected.some((emotion) => emotion.label === label);
     if (exists) {
       onChange(selected.filter((emotion) => emotion.label !== label));
@@ -38,7 +42,7 @@ export function EmotionPicker({ selected, onChange, mode = "before" }: EmotionPi
   return (
     <View>
       <View className="mb-5 flex-row flex-wrap gap-2">
-        {emotions.map((emotion) => {
+        {(lockedLabels ? selected.map((emotion) => ({ label: emotion.label })) : emotions).map((emotion) => {
           const active = selected.some((item) => item.label === emotion.label);
           return (
             <CalmButton
@@ -46,7 +50,7 @@ export function EmotionPicker({ selected, onChange, mode = "before" }: EmotionPi
               label={emotion.label}
               variant={active ? "primary" : "subtle"}
               onPress={() => toggle(emotion.label)}
-              className={`min-h-[56px] rounded-calm px-3 ${active ? "bg-accent" : "bg-bg-subtle"}`}
+              className={`min-h-[56px] rounded-calm px-3 ${active ? "bg-accent" : "bg-bg-subtle"} ${lockedLabels ? "opacity-95" : ""}`}
             >
               <Text className={`font-bodyMed text-sm ${active ? "text-white" : "text-text-primary"}`}>{emotion.label}</Text>
             </CalmButton>

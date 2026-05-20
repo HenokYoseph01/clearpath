@@ -1,35 +1,66 @@
 import { useState } from "react";
-import { Text, TextInput } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
-import { ProgressBar } from "@/components/shared/ProgressBar";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
-import { suggestBalancedThought } from "@/modules/ai/balancedThought";
+import { CrisisStepHeader } from "@/components/crisis/CrisisStepHeader";
+import { getBalancedThoughtStarters } from "@/modules/cbt/balancedThoughtStarters";
 import { useCrisisSession } from "@/hooks/useCrisisSession";
 
 export default function BalancedScreen() {
   const { session, updateSession, goToStep } = useCrisisSession();
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function suggest() {
-    setLoading(true);
-    const balancedThought = await suggestBalancedThought({
-      situation: session.situation,
-      automaticThought: session.automaticThoughts,
-      evidenceFor: session.evidenceFor,
-      evidenceAgainst: session.evidenceAgainst,
+  const starters = getBalancedThoughtStarters({
+    situation: session.situation,
+    automaticThought: session.automaticThoughts,
+    evidenceFor: session.evidenceFor,
+    evidenceAgainst: session.evidenceAgainst,
+    friendPerspective: session.friendPerspective,
+  });
+
+  function applyStarter(thought: string) {
+    updateSession({ balancedThought: thought });
+    setError("");
+  }
+
+  function continueFlow() {
+    if (session.balancedThought.trim().length < 3) {
+      setError("Write or choose a balanced thought before continuing.");
+      return;
+    }
+    setError("");
+    updateSession({
+      emotions: session.emotions.map((emotion) => ({
+        ...emotion,
+        intensityAfter: emotion.intensityAfter ?? emotion.intensityBefore,
+      })),
     });
-    updateSession({ balancedThought });
-    setLoading(false);
+    goToStep("rerate");
   }
 
   return (
     <Screen>
-      <ProgressBar step={7} total={8} />
+      <CrisisStepHeader step={7} total={8} backTo="/crisis/challenge" />
       <CrisisResourcesBanner distressScore={session.distressStart} />
       <Text className="mt-8 font-display text-3xl text-text-primary">What is a more balanced view?</Text>
-      <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Make it realistic and kind enough to return to later.</Text>
-      <CalmButton label={loading ? "Preparing a suggestion..." : "Suggest a starting point"} variant="subtle" className="mt-5" onPress={suggest} />
+      <Text className="mt-3 font-body text-base leading-7 text-text-secondary">
+        Pick a starting point or write your own. A balanced thought should be realistic, not forced-positive.
+      </Text>
+      <View className="mt-5 gap-3">
+        {starters.map((starter) => (
+          <CalmButton
+            key={starter.key}
+            label={starter.title}
+            variant="subtle"
+            className="items-start bg-bg-surface"
+            onPress={() => applyStarter(starter.thought)}
+          >
+            <Text className="font-bodyMed text-base text-text-primary">{starter.title}</Text>
+            <Text className="mt-1 font-body text-sm leading-6 text-text-secondary">{starter.thought}</Text>
+          </CalmButton>
+        ))}
+      </View>
       <TextInput
         accessibilityLabel="Balanced thought"
         accessibilityHint="Write or edit a balanced thought."
@@ -37,9 +68,15 @@ export default function BalancedScreen() {
         multiline
         placeholder="One way to look at this is..."
         value={session.balancedThought}
-        onChangeText={(balancedThought) => updateSession({ balancedThought })}
+        onChangeText={(balancedThought) => {
+          updateSession({ balancedThought });
+          if (balancedThought.trim().length >= 3) {
+            setError("");
+          }
+        }}
       />
-      <CalmButton label="Continue" className="mt-6 bg-accent" onPress={() => goToStep("rerate")} />
+      {error ? <Text className="mt-3 font-bodyMed text-sm text-crisis-text">{error}</Text> : null}
+      <CalmButton label="Continue" className="mt-6 bg-accent" onPress={continueFlow} />
     </Screen>
   );
 }

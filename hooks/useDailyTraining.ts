@@ -1,9 +1,17 @@
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
 import { getExerciseForDay } from "@/modules/cbt/curriculum";
-import { useUserStore } from "@/store/userStore";
+import { getNextTrainingDay } from "@/modules/db/queries";
 
 export function useDailyTraining() {
-  const currentStreak = useUserStore((state) => state.currentStreak);
-  const day = Math.min(currentStreak + 1, 30);
+  const [day, setDay] = useState(1);
+
+  useFocusEffect(
+    useCallback(() => {
+      setDay(getNextTrainingDay());
+    }, []),
+  );
+
   return {
     day,
     exercise: getExerciseForDay(day),

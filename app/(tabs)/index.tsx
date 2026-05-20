@@ -38,7 +38,7 @@ export default function HomeScreen() {
           <Text className="font-body text-base text-text-secondary">Good to see you{displayName ? `, ${displayName}` : ""}</Text>
           <Text className="font-display text-4xl text-text-primary">ClearPath</Text>
         </View>
-        <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">Day {day}</Text>
+        <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">Practice {day}</Text>
       </View>
 
       <View className="mb-6 rounded-calm bg-bg-surface p-5">

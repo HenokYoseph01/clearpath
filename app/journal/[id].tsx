@@ -13,13 +13,14 @@ export default function JournalEntryScreen() {
     return (
       <Screen>
         <Text className="font-display text-3xl text-text-primary">Entry not found</Text>
-        <CalmButton label="Back to journal" className="mt-6 bg-accent" onPress={() => router.back()} />
+        <CalmButton label="Back to journal" className="mt-6 bg-accent" onPress={() => router.replace("/journal")} />
       </Screen>
     );
   }
 
   return (
     <Screen>
+      <CalmButton label="Back to journal" variant="subtle" className="mb-5 bg-bg-surface" onPress={() => router.replace("/journal")} />
       <Text className="font-body text-sm text-text-tertiary">{new Date(entry.createdAt).toLocaleString()}</Text>
       <Text className="mt-2 font-display text-4xl text-text-primary">Reflection</Text>
       <View className="mt-6 rounded-calm bg-bg-surface p-5">
@@ -33,7 +34,7 @@ export default function JournalEntryScreen() {
       <View className="mt-4 rounded-calm bg-bg-surface p-5">
         <Text className="font-display text-2xl text-text-primary">Patterns</Text>
         <Text className="mt-2 font-body text-base leading-7 text-text-secondary">
-          {entry.distortions.length ? entry.distortions.map((key) => distortionDefinitions[key].title).join(", ") : "No patterns selected."}
+          {entry.distortions.length ? entry.distortions.map((key) => distortionDefinitions[key]?.title ?? key).join(", ") : "No patterns selected."}
         </Text>
       </View>
       <View className="mt-4 rounded-calm bg-bg-surface p-5">

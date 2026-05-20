@@ -23,9 +23,14 @@ export function summarizeRecentShift(sessions: CrisisSessionRecord[]): string {
   if (!recent || recent.emotions.length === 0) {
     return "Your insights will appear here after a few reflections.";
   }
-  const shifted = recent.emotions.find((emotion) => typeof emotion.intensityAfter === "number");
-  if (!shifted || shifted.intensityAfter == null) {
+
+  const shifted = recent.emotions.filter((emotion) => typeof emotion.intensityAfter === "number");
+  if (shifted.length === 0) {
     return "Your latest reflection is saved for when you want to revisit it.";
   }
-  return `${shifted.label} moved from ${shifted.intensityBefore}% to ${shifted.intensityAfter}%.`;
+
+  const summary = shifted
+    .map((emotion) => `${emotion.label} ${emotion.intensityBefore}% -> ${emotion.intensityAfter}%`)
+    .join(", ");
+  return `Latest feeling shifts: ${summary}.`;
 }

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { router } from "expo-router";
+import { useCallback, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
 import { Text, TextInput, View } from "react-native";
 import { CalendarDays, LifeBuoy, NotebookPen } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
@@ -7,7 +7,7 @@ import { CalmButton } from "@/components/shared/CalmButton";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
 import { MoodDial } from "@/components/shared/MoodDial";
 import { Emotion } from "@/constants/emotions";
-import { addDailyCheckIn } from "@/modules/db/queries";
+import { addDailyCheckIn, listCrisisSessions } from "@/modules/db/queries";
 import { useDailyTraining } from "@/hooks/useDailyTraining";
 import { useUserStore } from "@/store/userStore";
 import { useCrisisStore } from "@/store/crisisStore";
@@ -17,10 +17,17 @@ export default function HomeScreen() {
   const [energy, setEnergy] = useState<"Low" | "Medium" | "High">("Medium");
   const [note, setNote] = useState("");
   const [checkInSaved, setCheckInSaved] = useState(false);
+  const [journalEntryCount, setJournalEntryCount] = useState(0);
   const { day, foundationComplete } = useDailyTraining();
   const displayName = useUserStore((state) => state.displayName);
   const recordActivity = useUserStore((state) => state.recordActivity);
   const session = useCrisisStore((state) => state.session);
+
+  useFocusEffect(
+    useCallback(() => {
+      setJournalEntryCount(listCrisisSessions().length);
+    }, []),
+  );
 
   function saveCheckIn() {
     if (!mood) {
@@ -122,7 +129,11 @@ export default function HomeScreen() {
           <NotebookPen color="hsl(214, 20%, 22%)" size={22} />
           <View className="flex-1">
             <Text className="font-bodyMed text-base text-text-primary">Open journal</Text>
-            <Text className="font-body text-sm text-text-secondary">Review saved reflections and mood shifts.</Text>
+            <Text className="font-body text-sm text-text-secondary">
+              {journalEntryCount === 0
+                ? "No reflection entries yet. Completed crisis reflections will appear here."
+                : `Review ${journalEntryCount} saved reflection${journalEntryCount === 1 ? "" : "s"} and mood shifts.`}
+            </Text>
           </View>
         </View>
       </CalmButton>

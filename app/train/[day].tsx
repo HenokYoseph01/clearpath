@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
-import { getExerciseForDay } from "@/modules/cbt/curriculum";
-import { completeTrainingDay } from "@/modules/db/queries";
+import { foundationTrainingDays, getExerciseForDay } from "@/modules/cbt/curriculum";
+import { completeTrainingDay, getNextTrainingDay, listTrainingProgress } from "@/modules/db/queries";
 import { useUserStore } from "@/store/userStore";
 
 export default function TrainingDayScreen() {
@@ -13,17 +13,52 @@ export default function TrainingDayScreen() {
   const exercise = useMemo(() => getExerciseForDay(day), [day]);
   const [reflection, setReflection] = useState("");
   const recordActivity = useUserStore((state) => state.recordActivity);
+  const nextDay = getNextTrainingDay(foundationTrainingDays);
+  const completed = listTrainingProgress().some((record) => record.day === day);
+  const locked = day > nextDay || day < 1 || day > foundationTrainingDays;
 
   function complete() {
+    if (completed || locked) {
+      router.replace("/train");
+      return;
+    }
     completeTrainingDay(day, exercise.key, reflection);
     recordActivity(new Date().toISOString().slice(0, 10));
-    router.back();
+    router.replace("/train");
+  }
+
+  if (completed) {
+    return (
+      <Screen>
+        <Text className="font-display text-4xl text-text-primary">Practice complete</Text>
+        <Text className="mt-4 font-body text-base leading-7 text-text-secondary">
+          This practice is already marked complete. ClearPath keeps completed practices closed so the training path keeps moving forward.
+        </Text>
+        <CalmButton label="Back to training" className="mt-6 bg-accent" onPress={() => router.replace("/train")} />
+      </Screen>
+    );
+  }
+
+  if (locked) {
+    const lockMessage =
+      nextDay > foundationTrainingDays
+        ? "The 14-practice foundation is complete. New maintenance practices are not open yet."
+        : `Complete Practice ${nextDay} first. Each practice builds on the one before it.`;
+
+    return (
+      <Screen>
+        <Text className="font-display text-4xl text-text-primary">Practice locked</Text>
+        <Text className="mt-4 font-body text-base leading-7 text-text-secondary">{lockMessage}</Text>
+        <CalmButton label="Back to training" className="mt-6 bg-accent" onPress={() => router.replace("/train")} />
+      </Screen>
+    );
   }
 
   return (
     <Screen>
       <Text className="font-body text-sm text-text-tertiary">Day {day} · {exercise.estimate}</Text>
       <Text className="mt-2 font-display text-4xl text-text-primary">{exercise.title}</Text>
+      <Text className="mt-3 font-bodyMed text-base text-text-primary">{exercise.goal}</Text>
       <Text className="mt-4 font-body text-base leading-7 text-text-secondary">{exercise.prompt}</Text>
 
       {exercise.kind === "defusion" ? (

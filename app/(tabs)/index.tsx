@@ -16,7 +16,7 @@ export default function HomeScreen() {
   const [mood, setMood] = useState<Emotion | undefined>();
   const [energy, setEnergy] = useState<"Low" | "Medium" | "High">("Medium");
   const [note, setNote] = useState("");
-  const { exercise, day } = useDailyTraining();
+  const { day, foundationComplete } = useDailyTraining();
   const displayName = useUserStore((state) => state.displayName);
   const recordActivity = useUserStore((state) => state.recordActivity);
   const session = useCrisisStore((state) => state.session);
@@ -38,7 +38,9 @@ export default function HomeScreen() {
           <Text className="font-body text-base text-text-secondary">Good to see you{displayName ? `, ${displayName}` : ""}</Text>
           <Text className="font-display text-4xl text-text-primary">ClearPath</Text>
         </View>
-        <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">Practice {day}</Text>
+        <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">
+          {foundationComplete ? "Foundation done" : `Practice ${day}`}
+        </Text>
       </View>
 
       <View className="mb-6 rounded-calm bg-bg-surface p-5">
@@ -53,10 +55,10 @@ export default function HomeScreen() {
               <Text className="text-center font-bodyMed text-sm text-white">I need help right now</Text>
             </View>
           </CalmButton>
-          <CalmButton label="Today's exercise" variant="subtle" className="flex-1 bg-accent-subtle" onPress={() => router.push(`/train/${day}`)}>
+          <CalmButton label="Today's exercise" variant="subtle" className="flex-1 bg-accent-subtle" onPress={() => router.push(foundationComplete ? "/train" : `/train/${day}`)}>
             <View className="items-center gap-2">
               <CalendarDays color="hsl(214, 20%, 22%)" size={24} />
-              <Text className="text-center font-bodyMed text-sm text-text-primary">Today's exercise</Text>
+              <Text className="text-center font-bodyMed text-sm text-text-primary">{foundationComplete ? "Review training" : "Today's exercise"}</Text>
             </View>
           </CalmButton>
         </View>

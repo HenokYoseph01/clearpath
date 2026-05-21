@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
-import { getExerciseForDay } from "@/modules/cbt/curriculum";
+import { foundationTrainingDays, getExerciseForDay } from "@/modules/cbt/curriculum";
 import { getNextTrainingDay } from "@/modules/db/queries";
 
 export function useDailyTraining() {
@@ -8,12 +8,15 @@ export function useDailyTraining() {
 
   useFocusEffect(
     useCallback(() => {
-      setDay(getNextTrainingDay());
+      setDay(getNextTrainingDay(foundationTrainingDays));
     }, []),
   );
 
+  const foundationComplete = day > foundationTrainingDays;
+
   return {
     day,
-    exercise: getExerciseForDay(day),
+    exercise: getExerciseForDay(Math.min(day, foundationTrainingDays)),
+    foundationComplete,
   };
 }

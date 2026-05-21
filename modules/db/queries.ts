@@ -34,7 +34,7 @@ export type DailyCheckInRecord = {
   note?: string | null;
 };
 
-type TrainingProgressRecord = {
+export type TrainingProgressRecord = {
   id: number;
   day: number;
   completedAt: number | null;
@@ -278,6 +278,9 @@ export function listDailyCheckIns(limit = 30): DailyCheckInRecord[] {
 export function completeTrainingDay(day: number, exerciseKey: string, reflection: string): void {
   if (isWebRuntime()) {
     const webDb = readWebDatabase();
+    if (webDb.trainingProgress.some((record) => record.day === day)) {
+      return;
+    }
     webDb.trainingProgress.push({
       id: nextId(webDb.trainingProgress),
       day,
@@ -286,6 +289,11 @@ export function completeTrainingDay(day: number, exerciseKey: string, reflection
       reflection,
     });
     writeWebDatabase(webDb);
+    return;
+  }
+
+  const existing = getDb().getFirstSync<{ id: number }>("SELECT id FROM training_progress WHERE day = ? LIMIT 1", day);
+  if (existing) {
     return;
   }
 
@@ -298,14 +306,41 @@ export function completeTrainingDay(day: number, exerciseKey: string, reflection
   );
 }
 
-export function getNextTrainingDay(): number {
+export function listTrainingProgress(): TrainingProgressRecord[] {
   if (isWebRuntime()) {
-    const lastDay = readWebDatabase().trainingProgress.reduce((max, record) => Math.max(max, record.day), 0);
-    return Math.min(lastDay + 1, 30);
+    return [...readWebDatabase().trainingProgress].sort((a, b) => a.day - b.day);
   }
 
-  const row = getDb().getFirstSync<{ lastDay: number | null }>("SELECT MAX(day) as lastDay FROM training_progress");
-  return Math.min((row?.lastDay ?? 0) + 1, 30);
+  return getDb()
+    .getAllSync<Record<string, unknown>>("SELECT * FROM training_progress ORDER BY day ASC")
+    .map((row) => ({
+      id: Number(row.id),
+      day: Number(row.day),
+      completedAt: row.completed_at == null ? null : Number(row.completed_at),
+      exerciseKey: String(row.exercise_key),
+      reflection: row.reflection as string | null,
+    }));
+}
+
+export function getNextTrainingDay(maxDay = 14): number {
+  if (isWebRuntime()) {
+    const completed = new Set(readWebDatabase().trainingProgress.map((record) => record.day));
+    for (let day = 1; day <= maxDay; day += 1) {
+      if (!completed.has(day)) {
+        return day;
+      }
+    }
+    return maxDay + 1;
+  }
+
+  const rows = getDb().getAllSync<{ day: number }>("SELECT DISTINCT day FROM training_progress WHERE day <= ?", maxDay);
+  const completed = new Set(rows.map((row) => row.day));
+  for (let day = 1; day <= maxDay; day += 1) {
+    if (!completed.has(day)) {
+      return day;
+    }
+  }
+  return maxDay + 1;
 }
 
 export function clearAllData(): void {

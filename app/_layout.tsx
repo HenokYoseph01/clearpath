@@ -29,6 +29,7 @@ export default function RootLayout() {
         <Stack.Screen name="crisis" />
         <Stack.Screen name="train/[day]" />
         <Stack.Screen name="journal/[id]" />
+        <Stack.Screen name="learn/[pattern]" />
       </Stack>
     </>
   );

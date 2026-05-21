@@ -16,6 +16,7 @@ export default function HomeScreen() {
   const [mood, setMood] = useState<Emotion | undefined>();
   const [energy, setEnergy] = useState<"Low" | "Medium" | "High">("Medium");
   const [note, setNote] = useState("");
+  const [checkInSaved, setCheckInSaved] = useState(false);
   const { day, foundationComplete } = useDailyTraining();
   const displayName = useUserStore((state) => state.displayName);
   const recordActivity = useUserStore((state) => state.recordActivity);
@@ -28,7 +29,10 @@ export default function HomeScreen() {
     const today = new Date().toISOString().slice(0, 10);
     addDailyCheckIn({ date: today, moodLabel: mood.label, moodScore: mood.score, energy, note });
     recordActivity(today);
+    setMood(undefined);
+    setEnergy("Medium");
     setNote("");
+    setCheckInSaved(true);
   }
 
   return (
@@ -69,10 +73,29 @@ export default function HomeScreen() {
       ) : null}
 
       <Text className="mb-3 font-display text-2xl text-text-primary">Daily check-in</Text>
-      <MoodDial selected={mood} onSelect={setMood} />
+      <Text className="mb-4 font-body text-base leading-7 text-text-secondary">
+        Save a quick snapshot of your mood, energy, and optional context. These check-ins appear in Journal so changes are easier to notice over time.
+      </Text>
+      <MoodDial
+        selected={mood}
+        onSelect={(value) => {
+          setMood(value);
+          setCheckInSaved(false);
+        }}
+      />
+      <Text className="mt-4 font-bodyMed text-base text-text-primary">Energy</Text>
       <View className="mt-4 flex-row gap-2">
         {(["Low", "Medium", "High"] as const).map((item) => (
-          <CalmButton key={item} label={item} className="flex-1" variant={energy === item ? "primary" : "subtle"} onPress={() => setEnergy(item)} />
+          <CalmButton
+            key={item}
+            label={item}
+            className="flex-1"
+            variant={energy === item ? "primary" : "subtle"}
+            onPress={() => {
+              setEnergy(item);
+              setCheckInSaved(false);
+            }}
+          />
         ))}
       </View>
       <TextInput
@@ -82,8 +105,16 @@ export default function HomeScreen() {
         multiline
         placeholder="Anything on your mind today?"
         value={note}
-        onChangeText={setNote}
+        onChangeText={(value) => {
+          setNote(value);
+          setCheckInSaved(false);
+        }}
       />
+      {checkInSaved ? (
+        <Text className="mt-3 rounded-calm bg-calm p-4 font-bodyMed text-base text-text-primary">
+          Check-in saved. Your mood, energy, and note were added to Journal.
+        </Text>
+      ) : null}
       <CalmButton label="Save check-in" className="mt-4 bg-accent" onPress={saveCheckIn} />
 
       <CalmButton label="Open journal" variant="subtle" className="mt-6 bg-bg-surface" onPress={() => router.push("/journal")}>

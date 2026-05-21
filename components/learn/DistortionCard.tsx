@@ -20,7 +20,7 @@ export function DistortionCard({ distortion }: DistortionCardProps) {
             <Text className="mt-3 font-mono text-sm leading-6 text-text-primary">{item.example}</Text>
             <Text className="mt-3 font-bodyMed text-sm text-accent">Go deeper</Text>
           </View>
-          <ChevronRight color="hsl(207, 30%, 58%)" size={22} />
+          <ChevronRight color="hsl(202, 48%, 55%)" size={22} />
         </View>
       </Pressable>
     </Link>

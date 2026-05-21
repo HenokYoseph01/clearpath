@@ -14,7 +14,7 @@ export default function LearnTab() {
 
       <View className="mt-6 rounded-calm bg-bg-surface p-5">
         <View className="flex-row items-center gap-3">
-          <Brain color="hsl(207, 30%, 58%)" size={24} />
+          <Brain color="hsl(202, 48%, 55%)" size={24} />
           <Text className="flex-1 font-display text-2xl text-text-primary">What it helps you practice</Text>
         </View>
         <Text className="mt-4 font-body text-base leading-7 text-text-secondary">
@@ -24,7 +24,7 @@ export default function LearnTab() {
 
       <View className="mt-4 rounded-calm bg-bg-surface p-5">
         <View className="flex-row items-center gap-3">
-          <HeartPulse color="hsl(207, 30%, 58%)" size={24} />
+          <HeartPulse color="hsl(202, 48%, 55%)" size={24} />
           <Text className="flex-1 font-display text-2xl text-text-primary">The ClearPath loop</Text>
         </View>
         {["What happened?", "What did my mind say?", "What did I feel in my body?", "What did I want to do?", "What would be a balanced next step?"].map((step, index) => (
@@ -36,7 +36,7 @@ export default function LearnTab() {
 
       <View className="mt-4 rounded-calm bg-bg-surface p-5">
         <View className="flex-row items-center gap-3">
-          <Wind color="hsl(207, 30%, 58%)" size={24} />
+          <Wind color="hsl(202, 48%, 55%)" size={24} />
           <Text className="flex-1 font-display text-2xl text-text-primary">When you are activated</Text>
         </View>
         <Text className="mt-4 font-body text-base leading-7 text-text-secondary">
@@ -45,7 +45,7 @@ export default function LearnTab() {
       </View>
 
       <View className="mt-6 flex-row items-center gap-3">
-        <Lightbulb color="hsl(207, 30%, 58%)" size={24} />
+        <Lightbulb color="hsl(202, 48%, 55%)" size={24} />
         <Text className="flex-1 font-display text-2xl text-text-primary">Thinking patterns</Text>
       </View>
       <Text className="mt-2 mb-4 font-body text-base leading-7 text-text-secondary">

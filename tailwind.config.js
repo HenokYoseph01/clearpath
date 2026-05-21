@@ -6,16 +6,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "bg-base": "hsl(210, 18%, 97%)",
-        "bg-surface": "hsl(208, 16%, 93%)",
-        "bg-subtle": "hsl(207, 14%, 89%)",
-        "bg-muted": "hsl(206, 12%, 85%)",
+        "bg-base": "hsl(204, 44%, 97%)",
+        "bg-surface": "hsl(204, 38%, 93%)",
+        "bg-subtle": "hsl(203, 34%, 88%)",
+        "bg-muted": "hsl(202, 28%, 83%)",
         "text-primary": "hsl(214, 20%, 22%)",
         "text-secondary": "hsl(213, 14%, 42%)",
         "text-tertiary": "hsl(212, 10%, 60%)",
-        accent: "hsl(207, 30%, 58%)",
-        "accent-subtle": "hsl(207, 22%, 88%)",
-        calm: "hsl(190, 20%, 70%)",
+        accent: "hsl(202, 48%, 55%)",
+        "accent-subtle": "hsl(202, 48%, 88%)",
+        calm: "hsl(196, 42%, 78%)",
         "gentle-green": "hsl(152, 18%, 68%)",
         "soft-amber": "hsl(38, 22%, 72%)",
         "crisis-bg": "hsl(5, 35%, 93%)",

@@ -10,7 +10,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "hsl(208, 16%, 93%)",
+          backgroundColor: "hsl(204, 38%, 93%)",
           borderTopWidth: 0,
           minHeight: 68,
         },

@@ -21,9 +21,9 @@ export function IntensitySlider({ label, value, onChange }: IntensitySliderProps
         maximumValue={100}
         step={5}
         value={value}
-        minimumTrackTintColor="hsl(207, 30%, 58%)"
-        maximumTrackTintColor="hsl(206, 12%, 85%)"
-        thumbTintColor="hsl(207, 30%, 58%)"
+        minimumTrackTintColor="hsl(202, 48%, 55%)"
+        maximumTrackTintColor="hsl(202, 28%, 83%)"
+        thumbTintColor="hsl(202, 48%, 55%)"
         onValueChange={onChange}
       />
     </View>

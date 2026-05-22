@@ -14,7 +14,8 @@ export default function TrainingDayScreen() {
   const [reflection, setReflection] = useState("");
   const recordActivity = useUserStore((state) => state.recordActivity);
   const nextDay = getNextTrainingDay(foundationTrainingDays);
-  const completed = listTrainingProgress().some((record) => record.day === day);
+  const completedRecord = listTrainingProgress().find((record) => record.day === day);
+  const completed = !!completedRecord;
   const locked = day > nextDay || day < 1 || day > foundationTrainingDays;
 
   function complete() {
@@ -30,10 +31,21 @@ export default function TrainingDayScreen() {
   if (completed) {
     return (
       <Screen>
-        <Text className="font-display text-4xl text-text-primary">Practice complete</Text>
+        <Text className="font-body text-sm text-text-tertiary">Practice {day} · completed</Text>
+        <Text className="mt-2 font-display text-4xl text-text-primary">{exercise.title}</Text>
         <Text className="mt-4 font-body text-base leading-7 text-text-secondary">
-          This practice is already marked complete. ClearPath keeps completed practices closed so the training path keeps moving forward.
+          This is a read-only review of what you wrote. Looking back can help you notice old habits, repeated themes, and ways your thinking is shifting.
         </Text>
+        <View className="mt-6 rounded-calm bg-bg-surface p-5">
+          <Text className="font-display text-2xl text-text-primary">Practice prompt</Text>
+          <Text className="mt-3 font-body text-base leading-7 text-text-secondary">{exercise.prompt}</Text>
+        </View>
+        <View className="mt-4 rounded-calm bg-calm p-5">
+          <Text className="font-display text-2xl text-text-primary">What you wrote</Text>
+          <Text className="mt-3 font-mono text-base leading-7 text-text-primary">
+            {completedRecord?.reflection?.trim() || "No reflection was written for this practice."}
+          </Text>
+        </View>
         <CalmButton label="Back to training" className="mt-6 bg-accent" onPress={() => router.replace("/train")} />
       </Screen>
     );

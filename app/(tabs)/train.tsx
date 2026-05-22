@@ -32,7 +32,7 @@ export default function TrainingTab() {
           {foundationComplete ? "Foundation complete" : `Next up: Practice ${nextDay} of ${foundationTrainingDays}`}
         </Text>
         <Text className="mt-2 font-body text-sm leading-6 text-text-secondary">
-          Completed practices stay highlighted and closed so the path keeps moving forward.
+          Completed practices stay highlighted and open as read-only reflections.
         </Text>
       </View>
       <View className="mt-6">
@@ -46,8 +46,8 @@ export default function TrainingTab() {
               key={exercise.key}
               label={exercise.title}
               variant="subtle"
-              disabled={completed || locked}
-              accessibilityState={{ disabled: completed || locked, selected: current }}
+              disabled={locked}
+              accessibilityState={{ disabled: locked, selected: current }}
               className={`mb-3 items-start ${completed ? "bg-calm" : locked ? "bg-bg-surface opacity-70" : "bg-accent-subtle"}`}
               onPress={() => router.push(`/train/${exercise.day}`)}
             >
@@ -55,7 +55,7 @@ export default function TrainingTab() {
                 {completed ? <CheckCircle2 color="hsl(214, 20%, 22%)" size={22} /> : locked ? <LockKeyhole color="hsl(212, 10%, 60%)" size={22} /> : null}
                 <View className="flex-1">
                   <Text className="font-bodyMed text-xs text-text-tertiary">
-                    {completed ? "Completed" : locked ? "Locked" : "Open now"}
+                    {completed ? "Completed - tap to review" : locked ? "Locked" : "Open now"}
                   </Text>
                   <Text className="mt-1 font-display text-xl text-text-primary">Practice {exercise.day}: {exercise.title}</Text>
                   <Text className="mt-1 font-body text-sm text-text-secondary">{exercise.goal}</Text>

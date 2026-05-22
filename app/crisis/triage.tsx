@@ -17,8 +17,10 @@ export default function TriageScreen() {
     <Screen>
       <CrisisStepHeader step={1} total={8} backTo="/(tabs)" />
       <CrisisResourcesBanner distressScore={session.distressStart} />
-      <Text className="mt-8 font-display text-3xl text-text-primary">Before we start, how distressed are you right now?</Text>
-      <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Choose the closest number. This helps ClearPath offer the right pace.</Text>
+      <Text className="mt-8 font-display text-3xl text-text-primary">How intense does this feel right now?</Text>
+      <Text className="mt-3 font-body text-base leading-7 text-text-secondary">
+        Choose the closest number. Higher numbers add grounding first; lower numbers continue into reflection.
+      </Text>
       <View className="mt-6 flex-row flex-wrap gap-2">
         {Array.from({ length: 10 }, (_, index) => index + 1).map((score) => (
           <CalmButton key={score} label={`${score}`} variant={session.distressStart === score ? "primary" : "subtle"} onPress={() => continueFlow(score)} className="h-[58px] w-[58px] px-0">

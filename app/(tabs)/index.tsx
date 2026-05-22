@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
 import { Text, TextInput, View } from "react-native";
-import { CalendarDays, LifeBuoy, NotebookPen } from "lucide-react-native";
+import { CalendarDays, NotebookPen, PenLine } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
@@ -65,13 +65,13 @@ export default function HomeScreen() {
       <View className="mb-6 rounded-calm bg-bg-surface p-5">
         <Text className="font-display text-3xl text-text-primary">What would help right now?</Text>
         <Text className="mt-2 font-body text-base leading-7 text-text-secondary">
-          Choose crisis support for a hard moment, or start the daily practice if you have a few quiet minutes.
+          Reflect on a moment that needs room, or start the daily practice if you have a few quiet minutes.
         </Text>
         <View className="mt-5 flex-row gap-3">
-          <CalmButton label="I need help right now" className="flex-1 bg-accent" onPress={() => router.push("/crisis/triage")}>
+          <CalmButton label="Reflect on a moment" className="flex-1 bg-accent" onPress={() => router.push("/crisis/triage")}>
             <View className="items-center gap-2">
-              <LifeBuoy color="white" size={24} />
-              <Text className="text-center font-bodyMed text-sm text-white">I need help right now</Text>
+              <PenLine color="white" size={24} />
+              <Text className="text-center font-bodyMed text-sm text-white">Reflect on a moment</Text>
             </View>
           </CalmButton>
           <CalmButton label="Today's exercise" variant="subtle" className="flex-1 bg-accent-subtle" onPress={() => router.push(foundationComplete ? "/train" : `/train/${day}`)}>
@@ -152,7 +152,7 @@ export default function HomeScreen() {
             <Text className="font-bodyMed text-base text-text-primary">Open journal</Text>
             <Text className="font-body text-sm text-text-secondary">
               {journalEntryCount === 0
-                ? "No reflection entries yet. Completed crisis reflections will appear here."
+                ? "No reflection entries yet. Completed reflections will appear here."
                 : `Review ${journalEntryCount} saved reflection${journalEntryCount === 1 ? "" : "s"} and mood shifts.`}
             </Text>
           </View>

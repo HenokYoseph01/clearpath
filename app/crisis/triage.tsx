@@ -15,7 +15,7 @@ export default function TriageScreen() {
 
   return (
     <Screen>
-      <CrisisStepHeader step={1} total={8} />
+      <CrisisStepHeader step={1} total={8} backTo="/(tabs)" />
       <CrisisResourcesBanner distressScore={session.distressStart} />
       <Text className="mt-8 font-display text-3xl text-text-primary">Before we start, how distressed are you right now?</Text>
       <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Choose the closest number. This helps ClearPath offer the right pace.</Text>

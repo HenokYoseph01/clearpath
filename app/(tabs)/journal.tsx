@@ -4,7 +4,15 @@ import { Text, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { JournalCard } from "@/components/shared/JournalCard";
 import { DailyCheckInRecord, listCrisisSessions, CrisisSessionRecord, listDailyCheckIns } from "@/modules/db/queries";
-import { getMoodTrend, getMostCommonDistortions, summarizeRecentShift } from "@/modules/insights/analytics";
+import { getMostCommonDistortions, summarizeRecentShift } from "@/modules/insights/analytics";
+
+function formatCheckInDate(timestamp: number): string {
+  return new Date(timestamp).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    weekday: "short",
+  });
+}
 
 export default function JournalTab() {
   const [entries, setEntries] = useState<CrisisSessionRecord[]>([]);
@@ -18,8 +26,8 @@ export default function JournalTab() {
   );
 
   const common = getMostCommonDistortions(entries);
-  const moodTrend = getMoodTrend(checkIns);
   const latestCheckIn = checkIns[0];
+  const recentCheckIns = checkIns.slice(0, 5);
 
   return (
     <Screen>
@@ -37,23 +45,35 @@ export default function JournalTab() {
               Latest: {latestCheckIn.moodLabel} mood, {latestCheckIn.energy.toLowerCase()} energy
             </Text>
             {latestCheckIn.note ? <Text className="mt-2 font-body text-sm leading-6 text-text-secondary">{latestCheckIn.note}</Text> : null}
+            <Text className="mt-2 font-body text-sm text-text-tertiary">
+              Recent check-ins are shown below as saved snapshots. They are not links.
+            </Text>
           </>
         ) : (
           <Text className="mt-2 font-body text-base leading-7 text-text-secondary">
             Your mood and energy snapshots will appear here after you save a check-in.
           </Text>
         )}
-        {moodTrend.length > 0 ? (
+        {recentCheckIns.length > 0 ? (
           <View className="mt-4">
-            <Text className="font-bodyMed text-sm text-text-primary">14-day mood trend</Text>
-            <View className="mt-3 flex-row items-end gap-2">
-              {moodTrend.map((point) => (
-                <View key={point.key} className="flex-1 items-center">
-                  <View className="w-full rounded-full bg-accent-subtle" style={{ height: Math.max(8, point.value * 10) }} />
-                  <Text className="mt-2 font-body text-xs text-text-tertiary">{point.label}</Text>
+            <Text className="font-bodyMed text-sm text-text-primary">Recent mood snapshots</Text>
+            {recentCheckIns.map((checkIn) => (
+              <View key={checkIn.id} className="mt-3 rounded-calm bg-bg-subtle p-4">
+                <View className="flex-row items-start justify-between gap-3">
+                  <View className="flex-1">
+                    <Text className="font-bodyMed text-base text-text-primary">{checkIn.moodLabel}</Text>
+                    <Text className="mt-1 font-body text-sm text-text-secondary">
+                      {formatCheckInDate(checkIn.createdAt)} · {checkIn.energy} energy
+                    </Text>
+                  </View>
+                  <Text className="font-bodyMed text-sm text-text-secondary">{checkIn.moodScore}/10</Text>
                 </View>
-              ))}
-            </View>
+                <View className="mt-3 h-2 overflow-hidden rounded-full bg-bg-muted">
+                  <View className="h-full rounded-full bg-accent" style={{ width: `${checkIn.moodScore * 10}%` }} />
+                </View>
+                {checkIn.note ? <Text className="mt-3 font-body text-sm leading-6 text-text-secondary">{checkIn.note}</Text> : null}
+              </View>
+            ))}
           </View>
         ) : null}
       </View>

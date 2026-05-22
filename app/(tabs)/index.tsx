@@ -5,9 +5,11 @@ import { CalendarDays, LifeBuoy, NotebookPen } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
+import { QuoteCard } from "@/components/home/QuoteCard";
 import { MoodDial } from "@/components/shared/MoodDial";
 import { Emotion } from "@/constants/emotions";
 import { addDailyCheckIn, listCrisisSessions } from "@/modules/db/queries";
+import { selectQuote } from "@/modules/quotes/dailyQuote";
 import { useDailyTraining } from "@/hooks/useDailyTraining";
 import { useUserStore } from "@/store/userStore";
 import { useCrisisStore } from "@/store/crisisStore";
@@ -17,11 +19,14 @@ export default function HomeScreen() {
   const [energy, setEnergy] = useState<"Low" | "Medium" | "High">("Medium");
   const [note, setNote] = useState("");
   const [checkInSaved, setCheckInSaved] = useState(false);
+  const [checkInError, setCheckInError] = useState("");
   const [journalEntryCount, setJournalEntryCount] = useState(0);
   const { day, foundationComplete } = useDailyTraining();
+  const quoteSeed = useUserStore((state) => state.quoteSeed);
   const displayName = useUserStore((state) => state.displayName);
   const recordActivity = useUserStore((state) => state.recordActivity);
   const session = useCrisisStore((state) => state.session);
+  const quote = selectQuote(quoteSeed);
 
   useFocusEffect(
     useCallback(() => {
@@ -31,6 +36,8 @@ export default function HomeScreen() {
 
   function saveCheckIn() {
     if (!mood) {
+      setCheckInSaved(false);
+      setCheckInError("Choose how you are arriving before saving. The note is optional context, but the mood is what makes this a check-in.");
       return;
     }
     const today = new Date().toISOString().slice(0, 10);
@@ -39,6 +46,7 @@ export default function HomeScreen() {
     setMood(undefined);
     setEnergy("Medium");
     setNote("");
+    setCheckInError("");
     setCheckInSaved(true);
   }
 
@@ -79,15 +87,21 @@ export default function HomeScreen() {
         <CalmButton label="Resume your reflection" variant="subtle" className="mb-6 bg-bg-surface" onPress={() => router.push(`/crisis/${session.step}`)} />
       ) : null}
 
+      <QuoteCard quote={quote} />
+
       <Text className="mb-3 font-display text-2xl text-text-primary">Daily check-in</Text>
       <Text className="mb-4 font-body text-base leading-7 text-text-secondary">
-        Save a quick snapshot of your mood, energy, and optional context. These check-ins appear in Journal so changes are easier to notice over time.
+        Save a quick snapshot of your mood and energy. The note adds optional context. Check-ins appear in Journal as a 14-day mood trend so you can notice patterns over time.
+      </Text>
+      <Text className="mb-3 rounded-calm bg-accent-subtle p-4 font-body text-sm leading-6 text-text-secondary">
+        Required: choose one mood from “How are you arriving?” Energy defaults to Medium, and the note can be blank.
       </Text>
       <MoodDial
         selected={mood}
         onSelect={(value) => {
           setMood(value);
           setCheckInSaved(false);
+          setCheckInError("");
         }}
       />
       <Text className="mt-4 font-bodyMed text-base text-text-primary">Energy</Text>
@@ -101,6 +115,7 @@ export default function HomeScreen() {
             onPress={() => {
               setEnergy(item);
               setCheckInSaved(false);
+              setCheckInError("");
             }}
           />
         ))}
@@ -115,14 +130,20 @@ export default function HomeScreen() {
         onChangeText={(value) => {
           setNote(value);
           setCheckInSaved(false);
+          setCheckInError("");
         }}
       />
+      {checkInError ? (
+        <Text className="mt-3 rounded-calm bg-crisis-bg p-4 font-bodyMed text-base text-crisis-text">
+          {checkInError}
+        </Text>
+      ) : null}
       {checkInSaved ? (
         <Text className="mt-3 rounded-calm bg-calm p-4 font-bodyMed text-base text-text-primary">
           Check-in saved. Your mood, energy, and note were added to Journal.
         </Text>
       ) : null}
-      <CalmButton label="Save check-in" className="mt-4 bg-accent" onPress={saveCheckIn} />
+      <CalmButton label={mood ? "Save check-in" : "Choose a mood to save"} className="mt-4 bg-accent" onPress={saveCheckIn} />
 
       <CalmButton label="Open journal" variant="subtle" className="mt-6 bg-bg-surface" onPress={() => router.push("/journal")}>
         <View className="flex-row items-center gap-3">

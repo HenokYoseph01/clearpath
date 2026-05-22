@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type UserState = {
+  quoteSeed: string;
   displayName: string;
   onboardingDone: boolean;
   currentStreak: number;
@@ -26,6 +27,7 @@ function previousIsoDate(date: string): string {
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
+      quoteSeed: Math.random().toString(36).slice(2),
       displayName: "",
       onboardingDone: false,
       currentStreak: 0,

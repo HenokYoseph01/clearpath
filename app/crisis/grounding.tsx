@@ -18,8 +18,8 @@ export default function GroundingScreen() {
       <Text className="mt-8 font-display text-3xl text-text-primary">Let your attention land here first.</Text>
       <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Move through this slowly. No timer, no rush.</Text>
       <View className="mt-6 rounded-calm bg-bg-surface p-5">
-        {grounding.map((item) => (
-          <Text key={item} className="mb-4 font-display text-2xl text-text-primary">{item}</Text>
+        {grounding.map((item, index) => (
+          <Text key={`grounding-${index}`} className="mb-4 font-display text-2xl text-text-primary">{item}</Text>
         ))}
       </View>
       <CalmButton

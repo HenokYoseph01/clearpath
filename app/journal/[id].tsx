@@ -43,8 +43,8 @@ export default function JournalEntryScreen() {
       </View>
       <View className="mt-4 rounded-calm bg-bg-surface p-5">
         <Text className="font-display text-2xl text-text-primary">Feeling shift</Text>
-        {entry.emotions.map((emotion) => (
-          <Text key={emotion.label} className="mt-2 font-body text-base text-text-secondary">
+        {entry.emotions.map((emotion, index) => (
+          <Text key={`${emotion.label}-${index}`} className="mt-2 font-body text-base text-text-secondary">
             {emotion.label}: {emotion.intensityBefore}% {"->"} {emotion.intensityAfter ?? emotion.intensityBefore}%
           </Text>
         ))}

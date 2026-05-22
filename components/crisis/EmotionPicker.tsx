@@ -42,11 +42,11 @@ export function EmotionPicker({ selected, onChange, mode = "before", lockedLabel
   return (
     <View>
       <View className="mb-5 flex-row flex-wrap gap-2">
-        {(lockedLabels ? selected.map((emotion) => ({ label: emotion.label })) : emotions).map((emotion) => {
+        {(lockedLabels ? selected.map((emotion) => ({ label: emotion.label })) : emotions).map((emotion, index) => {
           const active = selected.some((item) => item.label === emotion.label);
           return (
             <CalmButton
-              key={emotion.label}
+              key={`${emotion.label}-${index}`}
               label={emotion.label}
               variant={active ? "primary" : "subtle"}
               onPress={() => toggle(emotion.label)}
@@ -57,9 +57,9 @@ export function EmotionPicker({ selected, onChange, mode = "before", lockedLabel
           );
         })}
       </View>
-      {selected.map((emotion) => (
+      {selected.map((emotion, index) => (
         <IntensitySlider
-          key={emotion.label}
+          key={`${emotion.label}-${index}`}
           label={emotion.label}
           value={mode === "after" ? (emotion.intensityAfter ?? emotion.intensityBefore) : emotion.intensityBefore}
           onChange={(value) => updateIntensity(emotion.label, value)}

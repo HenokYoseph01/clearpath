@@ -28,7 +28,7 @@ export default function LearnTab() {
           <Text className="flex-1 font-display text-2xl text-text-primary">The ClearPath loop</Text>
         </View>
         {["What happened?", "What did my mind say?", "What did I feel in my body?", "What did I want to do?", "What would be a balanced next step?"].map((step, index) => (
-          <Text key={step} className="mt-3 font-body text-base leading-7 text-text-secondary">
+          <Text key={`clearpath-loop-${index}`} className="mt-3 font-body text-base leading-7 text-text-secondary">
             {index + 1}. {step}
           </Text>
         ))}

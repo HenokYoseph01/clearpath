@@ -1,10 +1,10 @@
 import { CrisisSessionRecord, DailyCheckInRecord } from "@/modules/db/queries";
 
-export function getMoodTrend(checkIns: DailyCheckInRecord[]): { label: string; value: number }[] {
+export function getMoodTrend(checkIns: DailyCheckInRecord[]): { key: string; label: string; value: number }[] {
   return checkIns
     .slice(0, 14)
     .reverse()
-    .map((checkIn) => ({ label: checkIn.date.slice(5), value: checkIn.moodScore }));
+    .map((checkIn) => ({ key: String(checkIn.id), label: checkIn.date.slice(5), value: checkIn.moodScore }));
 }
 
 export function getMostCommonDistortions(sessions: CrisisSessionRecord[]): string[] {

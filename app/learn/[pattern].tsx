@@ -15,7 +15,7 @@ function Section({ title, children }: { title: string; children: string[] }) {
     <View className="mt-4 rounded-calm bg-bg-surface p-5">
       <Text className="font-display text-2xl text-text-primary">{title}</Text>
       {children.map((item, index) => (
-        <Text key={item} className="mt-3 font-body text-base leading-7 text-text-secondary">
+        <Text key={`${title}-${index}`} className="mt-3 font-body text-base leading-7 text-text-secondary">
           {index + 1}. {item}
         </Text>
       ))}

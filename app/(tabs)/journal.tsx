@@ -48,7 +48,7 @@ export default function JournalTab() {
             <Text className="font-bodyMed text-sm text-text-primary">14-day mood trend</Text>
             <View className="mt-3 flex-row items-end gap-2">
               {moodTrend.map((point) => (
-                <View key={point.label} className="flex-1 items-center">
+                <View key={point.key} className="flex-1 items-center">
                   <View className="w-full rounded-full bg-accent-subtle" style={{ height: Math.max(8, point.value * 10) }} />
                   <Text className="mt-2 font-body text-xs text-text-tertiary">{point.label}</Text>
                 </View>

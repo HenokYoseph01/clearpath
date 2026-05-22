@@ -91,10 +91,10 @@ export default function HomeScreen() {
 
       <Text className="mb-3 font-display text-2xl text-text-primary">Daily check-in</Text>
       <Text className="mb-4 font-body text-base leading-7 text-text-secondary">
-        Save a quick snapshot of your mood and energy. The note adds optional context. Check-ins appear in Journal as a 14-day mood trend so you can notice patterns over time.
+        Pick a mood, set your energy, and add a note if you want. This becomes your mood trend in Journal.
       </Text>
       <Text className="mb-3 rounded-calm bg-accent-subtle p-4 font-body text-sm leading-6 text-text-secondary">
-        Required: choose one mood from “How are you arriving?” Energy defaults to Medium, and the note can be blank.
+        Mood is required. Energy starts at Medium. Notes are optional.
       </Text>
       <MoodDial
         selected={mood}

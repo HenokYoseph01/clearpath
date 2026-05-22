@@ -1,4 +1,4 @@
-import { Cloud } from "lucide-react-native";
+import { Cloud, Moon, Sun } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { SelectedQuote } from "@/modules/quotes/dailyQuote";
 
@@ -18,19 +18,18 @@ function CloudEdge({ side }: { side: "left" | "right" }) {
 }
 
 export function QuoteCard({ quote }: QuoteCardProps) {
+  const QuoteIcon = quote.period === "morning" ? Sun : quote.period === "evening" || quote.period === "quiet" ? Moon : Cloud;
+
   return (
     <View className="mb-6 overflow-hidden rounded-calm bg-accent-subtle p-5">
       <CloudEdge side="left" />
       <CloudEdge side="right" />
       <View className="relative">
         <View className="mb-3 flex-row items-center gap-2">
-          <Cloud color="hsl(202, 48%, 55%)" size={20} />
+          <QuoteIcon color="hsl(202, 48%, 55%)" size={20} />
           <Text className="font-bodyMed text-sm text-text-secondary">{quote.label}</Text>
         </View>
         <Text className="font-display text-2xl leading-8 text-text-primary">{quote.text}</Text>
-        <Text className="mt-3 font-body text-sm text-text-secondary">
-          Local, offline, and refreshed with the time of day.
-        </Text>
       </View>
     </View>
   );

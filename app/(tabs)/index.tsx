@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
 import { Text, TextInput, View } from "react-native";
 import { CalendarDays, NotebookPen, PenLine } from "lucide-react-native";
@@ -21,12 +21,21 @@ export default function HomeScreen() {
   const [checkInSaved, setCheckInSaved] = useState(false);
   const [checkInError, setCheckInError] = useState("");
   const [journalEntryCount, setJournalEntryCount] = useState(0);
+  const [quoteNow, setQuoteNow] = useState(() => new Date());
   const { day, foundationComplete } = useDailyTraining();
   const quoteSeed = useUserStore((state) => state.quoteSeed);
   const displayName = useUserStore((state) => state.displayName);
   const recordActivity = useUserStore((state) => state.recordActivity);
   const session = useCrisisStore((state) => state.session);
-  const quote = selectQuote(quoteSeed);
+  const quote = selectQuote(quoteSeed, quoteNow);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setQuoteNow(new Date());
+    }, 60 * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {

@@ -1,16 +1,20 @@
 import { Tabs } from "expo-router";
 import { BookOpen, Home, NotebookPen, Settings, Sprout } from "lucide-react-native";
-
-const iconColor = "hsl(214, 20%, 22%)";
+import { getTheme } from "@/modules/theme/palettes";
+import { useUserStore } from "@/store/userStore";
 
 export default function TabsLayout() {
+  const themeId = useUserStore((state) => state.themeId);
+  const theme = getTheme(themeId);
+  const iconColor = theme.textPrimary;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "hsl(204, 38%, 93%)",
+          backgroundColor: theme.bgSurface,
           borderTopWidth: 0,
           minHeight: 68,
         },

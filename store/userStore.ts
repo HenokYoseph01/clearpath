@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemeId } from "@/modules/theme/palettes";
 
 export type UserState = {
   quoteSeed: string;
+  themeId: ThemeId;
   displayName: string;
   onboardingDone: boolean;
   currentStreak: number;
@@ -12,6 +14,7 @@ export type UserState = {
   reminderTime: string | null;
   notificationsOn: boolean;
   setDisplayName: (displayName: string) => void;
+  setThemeId: (themeId: ThemeId) => void;
   setReminderTime: (time: string | null) => void;
   completeOnboarding: () => void;
   recordActivity: (date: string) => void;
@@ -28,6 +31,7 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       quoteSeed: Math.random().toString(36).slice(2),
+      themeId: "sky",
       displayName: "",
       onboardingDone: false,
       currentStreak: 0,
@@ -36,6 +40,7 @@ export const useUserStore = create<UserState>()(
       reminderTime: null,
       notificationsOn: true,
       setDisplayName: (displayName) => set({ displayName }),
+      setThemeId: (themeId) => set({ themeId }),
       setReminderTime: (reminderTime) => set({ reminderTime }),
       completeOnboarding: () => set({ onboardingDone: true }),
       setNotificationsOn: (notificationsOn) => set({ notificationsOn }),

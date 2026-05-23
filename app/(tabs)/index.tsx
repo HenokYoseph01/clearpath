@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
-import { Text, TextInput, View } from "react-native";
-import { CalendarDays, NotebookPen, PenLine } from "lucide-react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
+import { CalendarDays, HelpCircle, NotebookPen, PenLine } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
 import { QuoteCard } from "@/components/home/QuoteCard";
+import { AppGuideModal } from "@/components/home/AppGuideModal";
 import { MoodDial } from "@/components/shared/MoodDial";
 import { Emotion } from "@/constants/emotions";
 import { addDailyCheckIn, listCrisisSessions } from "@/modules/db/queries";
@@ -25,8 +26,12 @@ export default function HomeScreen() {
   const { day, foundationComplete } = useDailyTraining();
   const quoteSeed = useUserStore((state) => state.quoteSeed);
   const displayName = useUserStore((state) => state.displayName);
+  const onboardingDone = useUserStore((state) => state.onboardingDone);
+  const completeOnboarding = useUserStore((state) => state.completeOnboarding);
   const recordActivity = useUserStore((state) => state.recordActivity);
   const session = useCrisisStore((state) => state.session);
+  const [userStoreReady, setUserStoreReady] = useState(() => useUserStore.persist.hasHydrated());
+  const [guideOpen, setGuideOpen] = useState(false);
   const quote = selectQuote(quoteSeed, quoteNow);
 
   useEffect(() => {
@@ -35,6 +40,16 @@ export default function HomeScreen() {
     }, 60 * 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = useUserStore.persist.onFinishHydration(() => {
+      setUserStoreReady(true);
+    });
+
+    setUserStoreReady(useUserStore.persist.hasHydrated());
+
+    return unsubscribe;
   }, []);
 
   useFocusEffect(
@@ -61,14 +76,33 @@ export default function HomeScreen() {
 
   return (
     <Screen>
+      <AppGuideModal
+        visible={guideOpen || (userStoreReady && !onboardingDone)}
+        onDone={() => {
+          completeOnboarding();
+          setGuideOpen(false);
+        }}
+      />
+
       <View className="mb-5 flex-row items-start justify-between">
         <View>
           <Text className="font-body text-base text-text-secondary">Good to see you{displayName ? `, ${displayName}` : ""}</Text>
           <Text className="font-display text-4xl text-text-primary">ClearPath</Text>
         </View>
-        <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">
-          {foundationComplete ? "Foundation done" : `Practice ${day}`}
-        </Text>
+        <View className="items-end gap-2">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Open app guide"
+            accessibilityHint="Shows a short guide to the ClearPath tabs."
+            className="h-[44px] w-[44px] items-center justify-center rounded-full bg-accent-subtle"
+            onPress={() => setGuideOpen(true)}
+          >
+            <HelpCircle color="hsl(214, 20%, 22%)" size={22} />
+          </Pressable>
+          <Text className="rounded-full bg-accent-subtle px-3 py-2 font-bodyMed text-sm text-text-primary">
+            {foundationComplete ? "Foundation done" : `Practice ${day}`}
+          </Text>
+        </View>
       </View>
 
       <View className="mb-6 rounded-calm bg-bg-surface p-5">

@@ -30,7 +30,7 @@ const guideItems = [
   },
   {
     title: "Settings",
-    text: "Adjust reminders, export notes, or clear local data.",
+    text: "Change themes, adjust reminders, or manage local data.",
     icon: Settings,
   },
 ];

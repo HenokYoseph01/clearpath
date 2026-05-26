@@ -4,6 +4,7 @@
     "slug": "clearpath",
     "version": "0.1.0",
     "orientation": "portrait",
+    "icon": "./assets/icon.png",
     "scheme": "clearpath",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,6 +15,7 @@
     "android": {
       "package": "app.clearpath.mvp",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F4F7F9"
       }
     },

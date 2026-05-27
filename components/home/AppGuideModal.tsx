@@ -1,4 +1,4 @@
-import { BookOpen, Home, NotebookPen, Settings, Sprout } from "lucide-react-native";
+import { BookOpen, ChevronDown, Home, NotebookPen, Settings, Sprout } from "lucide-react-native";
 import { Modal, ScrollView, Text, View } from "react-native";
 import { CalmButton } from "@/components/shared/CalmButton";
 
@@ -56,12 +56,16 @@ export function AppGuideModal({ visible, onDone }: AppGuideModalProps) {
           <GuideCloud className="left-16 top-10 scale-75" />
           <GuideCloud className="right-16 top-28 scale-[0.6] opacity-70" />
 
-          <ScrollView contentContainerClassName="px-5 py-6" showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerClassName="px-5 py-6" showsVerticalScrollIndicator>
             <Text className="font-bodyMed text-sm text-text-secondary">Welcome to ClearPath</Text>
             <Text className="mt-2 font-display text-4xl leading-[44px] text-text-primary">A soft place to sort a hard moment.</Text>
             <Text className="mt-3 font-body text-base leading-7 text-text-secondary">
               No rush. Pick the part that fits today, and let the app meet you there.
             </Text>
+            <View className="mt-4 flex-row items-center gap-2 self-start rounded-full bg-bg-base/70 px-3 py-2">
+              <Text className="font-bodyMed text-xs text-text-secondary">Scroll for the full guide</Text>
+              <ChevronDown color="hsl(213, 14%, 42%)" size={15} />
+            </View>
 
             <View className="mt-6 gap-3">
               {guideItems.map((item) => {

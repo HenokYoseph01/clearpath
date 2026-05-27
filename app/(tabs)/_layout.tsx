@@ -1,12 +1,15 @@
 import { Tabs } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BookOpen, Home, NotebookPen, Settings, Sprout } from "lucide-react-native";
 import { getTheme } from "@/modules/theme/palettes";
 import { useUserStore } from "@/store/userStore";
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   const themeId = useUserStore((state) => state.themeId);
   const theme = getTheme(themeId);
   const iconColor = theme.textPrimary;
+  const bottomInset = Math.max(insets.bottom, 12);
 
   return (
     <Tabs
@@ -16,9 +19,9 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.bgSurface,
           borderTopWidth: 0,
-          height: 68,
-          paddingBottom: 0,
-          paddingTop: 0,
+          height: 56 + bottomInset,
+          paddingBottom: bottomInset,
+          paddingTop: 6,
         },
         tabBarItemStyle: {
           alignItems: "center",

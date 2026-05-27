@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Text, TextInput } from "react-native";
+import { Text } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
 import { CrisisStepHeader } from "@/components/crisis/CrisisStepHeader";
 import { socraticPrompts } from "@/modules/cbt/socratic";
@@ -26,11 +27,11 @@ export default function ChallengeScreen() {
       <CrisisResourcesBanner distressScore={session.distressStart} />
       <Text className="mt-8 font-display text-3xl text-text-primary">Let us look at the thought from a few angles.</Text>
       {socraticPrompts.map((prompt) => (
-        <TextInput
+        <CalmTextInput
           key={prompt.key}
           accessibilityLabel={prompt.title}
           accessibilityHint={prompt.helper}
-          className="mt-5 min-h-[120px] rounded-calm bg-bg-subtle p-5 font-mono text-base leading-7 text-text-primary"
+          className="mt-5 min-h-[120px] p-5 font-mono leading-7"
           multiline
           placeholder={prompt.title}
           value={session[prompt.key]}

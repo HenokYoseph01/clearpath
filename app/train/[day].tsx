@@ -1,8 +1,9 @@
 import { useLocalSearchParams, router } from "expo-router";
 import { useMemo, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { foundationTrainingDays, getExerciseForDay } from "@/modules/cbt/curriculum";
 import { completeTrainingDay, getNextTrainingDay, listTrainingProgress } from "@/modules/db/queries";
 import { useUserStore } from "@/store/userStore";
@@ -89,10 +90,10 @@ export default function TrainingDayScreen() {
         </View>
       ) : null}
 
-      <TextInput
+      <CalmTextInput
         accessibilityLabel="Training reflection"
         accessibilityHint="Write a short reflection for this practice."
-        className="mt-6 min-h-[180px] rounded-calm bg-bg-subtle p-5 font-mono text-base leading-7 text-text-primary"
+        className="mt-6 min-h-[180px] p-5 font-mono leading-7"
         multiline
         placeholder="What did you notice?"
         value={reflection}

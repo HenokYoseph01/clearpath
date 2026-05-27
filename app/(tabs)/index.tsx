@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { CalendarDays, HelpCircle, NotebookPen, PenLine } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
@@ -8,6 +8,7 @@ import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner
 import { QuoteCard } from "@/components/home/QuoteCard";
 import { AppGuideModal } from "@/components/home/AppGuideModal";
 import { MoodDial } from "@/components/shared/MoodDial";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { Emotion } from "@/constants/emotions";
 import { addDailyCheckIn, listCrisisSessions } from "@/modules/db/queries";
 import { selectQuote } from "@/modules/quotes/dailyQuote";
@@ -163,10 +164,10 @@ export default function HomeScreen() {
           />
         ))}
       </View>
-      <TextInput
+      <CalmTextInput
         accessibilityLabel="Optional reflection"
         accessibilityHint="Add anything on your mind today."
-        className="mt-4 min-h-[96px] rounded-calm bg-bg-subtle p-4 font-mono text-base text-text-primary"
+        className="mt-4 min-h-[96px] p-4 font-mono"
         multiline
         placeholder="Anything on your mind today?"
         value={note}

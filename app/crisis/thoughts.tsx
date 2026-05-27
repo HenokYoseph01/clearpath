@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
 import { DistortionTag } from "@/components/crisis/DistortionTag";
 import { CrisisStepHeader } from "@/components/crisis/CrisisStepHeader";
@@ -53,10 +54,10 @@ export default function ThoughtsScreen() {
       <CrisisResourcesBanner distressScore={session.distressStart} />
       <Text className="mt-8 font-display text-3xl text-text-primary">What did your mind say?</Text>
       <Text className="mt-3 font-body text-base leading-7 text-text-secondary">Write the automatic thought as it showed up.</Text>
-      <TextInput
+      <CalmTextInput
         accessibilityLabel="Automatic thoughts"
         accessibilityHint="Write the thought that came up quickly."
-        className="mt-6 min-h-[180px] rounded-calm bg-bg-subtle p-5 font-mono text-base leading-7 text-text-primary"
+        className="mt-6 min-h-[180px] p-5 font-mono leading-7"
         multiline
         placeholder="They ignored me because I did something wrong."
         value={session.automaticThoughts}

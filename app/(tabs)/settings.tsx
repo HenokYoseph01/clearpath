@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { Check } from "lucide-react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { clearAllData } from "@/modules/db/queries";
 import { scheduleDailyReminder } from "@/modules/notifications/scheduler";
 import { clearPathThemes } from "@/modules/theme/palettes";
@@ -34,10 +35,10 @@ export default function SettingsTab() {
       <Text className="font-display text-4xl text-text-primary">Settings</Text>
       <View className="mt-6 rounded-calm bg-bg-surface p-4">
         <Text className="font-display text-2xl text-text-primary">Your experience</Text>
-        <TextInput
+        <CalmTextInput
           accessibilityLabel="Display name"
           accessibilityHint="Used only for the home greeting."
-          className="mt-4 min-h-[52px] rounded-calm bg-bg-subtle px-4 font-body text-base text-text-primary"
+          className="mt-4 min-h-[52px] px-4"
           placeholder="Display name"
           value={displayName}
           onChangeText={setDisplayName}
@@ -84,10 +85,10 @@ export default function SettingsTab() {
       <View className="mt-5 rounded-calm bg-bg-surface p-4">
         <Text className="font-display text-2xl text-text-primary">Your data</Text>
         <Text className="mt-2 font-body text-base leading-7 text-text-secondary">All ClearPath entries stay on this device unless you choose to export them later.</Text>
-        <TextInput
+        <CalmTextInput
           accessibilityLabel="Delete confirmation"
           accessibilityHint="Type DELETE to clear local data."
-          className="mt-4 min-h-[52px] rounded-calm bg-bg-subtle px-4 font-body text-base text-text-primary"
+          className="mt-4 min-h-[52px] px-4"
           placeholder="Type DELETE"
           value={deleteText}
           onChangeText={setDeleteText}

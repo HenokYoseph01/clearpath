@@ -16,7 +16,18 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.bgSurface,
           borderTopWidth: 0,
-          minHeight: 68,
+          height: 68,
+          paddingBottom: 0,
+          paddingTop: 0,
+        },
+        tabBarItemStyle: {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        tabBarIconStyle: {
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 0,
         },
       }}
     >

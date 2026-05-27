@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 import { Screen } from "@/components/shared/Screen";
 import { CalmButton } from "@/components/shared/CalmButton";
+import { CalmTextInput } from "@/components/shared/CalmTextInput";
 import { CrisisResourcesBanner } from "@/components/shared/CrisisResourcesBanner";
 import { CrisisStepHeader } from "@/components/crisis/CrisisStepHeader";
 import { getBalancedThoughtStarters } from "@/modules/cbt/balancedThoughtStarters";
@@ -61,10 +62,10 @@ export default function BalancedScreen() {
           </CalmButton>
         ))}
       </View>
-      <TextInput
+      <CalmTextInput
         accessibilityLabel="Balanced thought"
         accessibilityHint="Write or edit a balanced thought."
-        className="mt-5 min-h-[180px] rounded-calm bg-bg-subtle p-5 font-mono text-base leading-7 text-text-primary"
+        className="mt-5 min-h-[180px] p-5 font-mono leading-7"
         multiline
         placeholder="One way to look at this is..."
         value={session.balancedThought}

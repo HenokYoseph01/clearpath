@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Href, router } from "expo-router";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -39,7 +39,7 @@ export default function TitleScreen() {
     <View className="flex-1 items-center justify-center bg-bg-base px-8">
       <Animated.View className="items-center" style={logoStyle}>
         <View className="mb-5 h-20 w-20 items-center justify-center rounded-full bg-accent-subtle">
-          <Text className="font-display text-5xl text-text-primary">C</Text>
+          <Image source={require("../assets/icon.png")} className="h-14 w-14" resizeMode="contain" />
         </View>
         <Text className="font-display text-5xl text-text-primary">ClearPath</Text>
         <Text className="mt-3 text-center font-body text-base leading-7 text-text-secondary">
